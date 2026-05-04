@@ -6,7 +6,7 @@ import { getInitials, getAvatarColor, formatDate, getErrorMessage } from '../uti
 import './ProfilePage.css';
 
 const ProfilePage = () => {
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser } = useAuth();
   const [profileForm, setProfileForm] = useState({ name: user?.name || '' });
   const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirm: '' });
   const [savingProfile, setSavingProfile] = useState(false);

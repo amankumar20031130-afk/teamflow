@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { taskAPI } from '../utils/api';
-import { formatDate, isOverdue, getStatusLabel, getPriorityLabel, getInitials, getAvatarColor } from '../utils/helpers';
+import { formatDate, isOverdue, getStatusLabel, getInitials, getAvatarColor } from '../utils/helpers';
 import './DashboardPage.css';
 
 const StatCard = ({ label, value, icon, color, sub }) => (
