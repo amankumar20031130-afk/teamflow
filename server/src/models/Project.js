@@ -49,17 +49,18 @@ const projectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Helper: works whether the field is a raw ObjectId or a populated document
+const toId = (val) => (val?._id ?? val)?.toString();
+
 projectSchema.methods.isAdmin = function (userId) {
-  if (this.owner.toString() === userId.toString()) return true;
-  const member = this.members.find(
-    (m) => m.user.toString() === userId.toString()
-  );
+  if (toId(this.owner) === userId.toString()) return true;
+  const member = this.members.find((m) => toId(m.user) === userId.toString());
   return member && member.role === 'admin';
 };
 
 projectSchema.methods.isMember = function (userId) {
-  if (this.owner.toString() === userId.toString()) return true;
-  return this.members.some((m) => m.user.toString() === userId.toString());
+  if (toId(this.owner) === userId.toString()) return true;
+  return this.members.some((m) => toId(m.user) === userId.toString());
 };
 
 module.exports = mongoose.model('Project', projectSchema);

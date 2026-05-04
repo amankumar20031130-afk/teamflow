@@ -31,13 +31,9 @@ const LoginPage = () => {
     if (Object.keys(errs).length) return setErrors(errs);
     setLoading(true);
     try {
-      const loggedInUser = await login(form.email, form.password);
+      await login(form.email, form.password);
       toast.success('Welcome back!');
-      if (loggedInUser?.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
+      navigate('/dashboard');
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {

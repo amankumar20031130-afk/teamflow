@@ -61,19 +61,4 @@ export const userAPI = {
   getOne: (id) => api.get(`/users/${id}`),
 };
 
-export const adminAPI = {
-  getStats: () => api.get('/admin/stats'),
-  // Users
-  getUsers: (params) => api.get('/admin/users', { params }),
-  getUserDetails: (id) => api.get(`/admin/users/${id}`),
-  updateUserRole: (id, role) => api.put(`/admin/users/${id}/role`, { role }),
-  toggleUserActive: (id) => api.put(`/admin/users/${id}/toggle-active`),
-  deleteUser: (id) => api.delete(`/admin/users/${id}`),
-  // Projects
-  getProjects: (params) => api.get('/admin/projects', { params }),
-  deleteProject: (id) => api.delete(`/admin/projects/${id}`),
-  // Tasks
-  getTasks: (params) => api.get('/admin/tasks', { params }),
-};
-
 export default api;

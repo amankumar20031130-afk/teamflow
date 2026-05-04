@@ -9,26 +9,14 @@ const signup = async (req, res) => {
   }
 
   try {
-    const { name, email, password, adminSecret } = req.body;
+    const { name, email, password } = req.body;
 
     const existing = await User.findOne({ email });
     if (existing) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Email already registered' });
+      return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    // Determine role: if a valid admin secret is provided, register as admin
-    let role = 'user';
-    if (adminSecret) {
-      const validSecret = process.env.ADMIN_SECRET || 'TeamFlowAdmin@2024';
-      if (adminSecret !== validSecret) {
-        return res.status(403).json({ success: false, message: 'Invalid admin secret key' });
-      }
-      role = 'admin';
-    }
-
-    const user = await User.create({ name, email, password, role });
+    const user = await User.create({ name, email, password });
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -39,8 +27,6 @@ const signup = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
-        role: user.role,
-        isActive: user.isActive,
         createdAt: user.createdAt,
       },
     });
@@ -60,16 +46,12 @@ const login = async (req, res) => {
 
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ success: false, message: 'Invalid credentials' });
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
     const token = generateToken(user._id);
@@ -82,8 +64,6 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
-        role: user.role,
-        isActive: user.isActive,
         createdAt: user.createdAt,
       },
     });
@@ -118,22 +98,16 @@ const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Both passwords are required' });
+      return res.status(400).json({ success: false, message: 'Both passwords are required' });
     }
     if (newPassword.length < 6) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'New password must be at least 6 characters' });
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
     }
 
     const user = await User.findById(req.user._id).select('+password');
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Current password is incorrect' });
+      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
     }
 
     user.password = newPassword;

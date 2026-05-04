@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { projectAPI, taskAPI } from '../utils/api';
+import { projectAPI, taskAPI, userAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import {
   formatDate, getStatusLabel, getPriorityLabel, getProjectStatusLabel,
@@ -213,19 +213,54 @@ const CreateTaskModal = ({ project, defaultStatus, onClose, onCreate }) => {
 };
 
 const AddMemberModal = ({ project, onClose, onUpdate }) => {
-  const [email, setEmail] = useState('');
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [role, setRole] = useState('member');
+  const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const searchTimer = useRef(null);
+
+  // IDs already in the project (owner + members) — exclude from suggestions
+  const existingIds = new Set([
+    project.owner?._id || project.owner,
+    ...(project.members || []).map((m) => m.user?._id || m.user),
+  ].map(String));
+
+  useEffect(() => {
+    clearTimeout(searchTimer.current);
+    setResults([]);
+    if (!query.trim()) return;
+    searchTimer.current = setTimeout(() => {
+      setSearching(true);
+      userAPI.search(query)
+        .then((r) => {
+          const filtered = (r.data.users || []).filter((u) => !existingIds.has(String(u._id)));
+          setResults(filtered);
+        })
+        .catch(() => {})
+        .finally(() => setSearching(false));
+    }, 300);
+    return () => clearTimeout(searchTimer.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  const handleSelect = (user) => {
+    setSelected(user);
+    setQuery('');
+    setResults([]);
+    setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) return setError('Email is required');
+    if (!selected) return setError('Please select a user to add');
     setLoading(true);
     try {
-      const res = await projectAPI.addMember(project._id, { email: email.trim(), role });
+      const res = await projectAPI.addMember(project._id, { userId: selected._id, role });
       onUpdate(res.data.project);
-      toast.success('Member added!');
+      toast.success(`${selected.name} added to the project!`);
       onClose();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -247,29 +282,94 @@ const AddMemberModal = ({ project, onClose, onUpdate }) => {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            <div className="form-group">
-              <label className="form-label">User Email *</label>
-              <input
-                type="email"
-                className={`form-input ${error ? 'error' : ''}`}
-                placeholder="teammate@example.com"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                autoFocus
-              />
-              {error && <span className="form-error">{error}</span>}
+
+            {/* Search input */}
+            <div className="form-group" style={{ position: 'relative' }}>
+              <label className="form-label">Search by name *</label>
+              <div className={`member-search-box ${error && !selected ? 'error' : ''}`}>
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: 'var(--gray-400)', flexShrink: 0 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  className="member-search-input"
+                  placeholder="Type a name to search…"
+                  value={query}
+                  onChange={(e) => { setQuery(e.target.value); setError(''); }}
+                  autoFocus
+                  autoComplete="off"
+                />
+                {searching && <span className="loading-spinner" style={{ width: 14, height: 14, borderWidth: 2, flexShrink: 0 }} />}
+              </div>
+              {error && !selected && <span className="form-error">{error}</span>}
+
+              {/* Dropdown suggestions */}
+              {results.length > 0 && (
+                <div className="member-suggestions">
+                  {results.map((u) => (
+                    <button
+                      key={u._id}
+                      type="button"
+                      className="member-suggestion-row"
+                      onClick={() => handleSelect(u)}
+                    >
+                      <span
+                        className="avatar avatar-sm"
+                        style={{ background: getAvatarColor(u.name) }}
+                      >
+                        {getInitials(u.name)}
+                      </span>
+                      <div className="member-suggestion-info">
+                        <span className="member-suggestion-name">{u.name}</span>
+                        <span className="member-suggestion-email">{u.email}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* No results hint */}
+              {query.trim().length >= 2 && !searching && results.length === 0 && (
+                <div className="member-no-results">No users found for "{query}"</div>
+              )}
             </div>
+
+            {/* Selected user chip */}
+            {selected && (
+              <div className="member-selected-chip">
+                <span className="avatar avatar-sm" style={{ background: getAvatarColor(selected.name) }}>
+                  {getInitials(selected.name)}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span className="member-suggestion-name">{selected.name}</span>
+                  <span className="member-suggestion-email">{selected.email}</span>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-icon btn-sm"
+                  onClick={() => setSelected(null)}
+                  title="Remove selection"
+                  style={{ color: 'var(--gray-400)' }}
+                >
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
+
+            {/* Role */}
             <div className="form-group">
               <label className="form-label">Role</label>
               <select className="form-input" value={role} onChange={(e) => setRole(e.target.value)}>
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
+                <option value="member">Member — can view and work on tasks</option>
+                <option value="admin">Admin — can also manage project settings</option>
               </select>
             </div>
+
           </div>
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-primary" disabled={loading || !selected}>
               {loading ? <><span className="loading-spinner" />Adding...</> : 'Add Member'}
             </button>
           </div>

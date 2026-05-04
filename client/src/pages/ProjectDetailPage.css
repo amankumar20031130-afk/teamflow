@@ -384,6 +384,88 @@
   color: var(--gray-800);
 }
 
+/* ── Add Member search ──────────────────────────────────── */
+.member-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: white;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.member-search-box:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+}
+.member-search-box.error { border-color: var(--danger); }
+
+.member-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--gray-800);
+  background: transparent;
+}
+.member-search-input::placeholder { color: var(--gray-400); }
+
+/* Suggestions dropdown */
+.member-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  z-index: 50;
+  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.member-suggestion-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background 0.12s;
+}
+.member-suggestion-row:last-child { border-bottom: none; }
+.member-suggestion-row:hover { background: var(--gray-50); }
+
+.member-suggestion-info { display: flex; flex-direction: column; min-width: 0; }
+.member-suggestion-name { font-size: 13px; font-weight: 600; color: var(--gray-800); }
+.member-suggestion-email { font-size: 11px; color: var(--gray-400); }
+
+.member-no-results {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--gray-400);
+  font-style: italic;
+  padding: 4px 2px;
+}
+
+/* Selected user chip */
+.member-selected-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius);
+  margin-top: -4px;
+}
+
 @media (max-width: 900px) {
   .kanban-board { grid-template-columns: repeat(2, 1fr); }
 }

@@ -121,22 +121,24 @@ const addMember = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Only admins can add members' });
     }
 
-    const { email, role } = req.body;
-    if (!email) {
-      return res.status(400).json({ success: false, message: 'Email is required' });
+    const { userId, role } = req.body;
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'Please select a user to add' });
     }
 
-    const userToAdd = await User.findOne({ email: email.toLowerCase() });
+    const userToAdd = await User.findById(userId);
     if (!userToAdd) {
-      return res.status(404).json({ success: false, message: 'User not found with that email' });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    if (project.owner.toString() === userToAdd._id.toString()) {
+    const toId = (val) => (val?._id ?? val)?.toString();
+
+    if (toId(project.owner) === userToAdd._id.toString()) {
       return res.status(400).json({ success: false, message: 'User is already the owner' });
     }
 
     const alreadyMember = project.members.some(
-      (m) => m.user.toString() === userToAdd._id.toString()
+      (m) => toId(m.user) === userToAdd._id.toString()
     );
     if (alreadyMember) {
       return res.status(400).json({ success: false, message: 'User is already a member' });
