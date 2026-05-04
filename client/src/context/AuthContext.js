@@ -43,8 +43,10 @@ export const AuthProvider = ({ children }) => {
     return userData;
   }, []);
 
-  const signup = useCallback(async (name, email, password) => {
-    const res = await authAPI.signup({ name, email, password });
+  const signup = useCallback(async (name, email, password, adminSecret) => {
+    const payload = { name, email, password };
+    if (adminSecret) payload.adminSecret = adminSecret;
+    const res = await authAPI.signup(payload);
     const { token, user: userData } = res.data;
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));

@@ -9,7 +9,7 @@ const signup = async (req, res) => {
   }
 
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, adminSecret } = req.body;
 
     const existing = await User.findOne({ email });
     if (existing) {
@@ -18,7 +18,17 @@ const signup = async (req, res) => {
         .json({ success: false, message: 'Email already registered' });
     }
 
-    const user = await User.create({ name, email, password });
+    // Determine role: if a valid admin secret is provided, register as admin
+    let role = 'user';
+    if (adminSecret) {
+      const validSecret = process.env.ADMIN_SECRET || 'TeamFlowAdmin@2024';
+      if (adminSecret !== validSecret) {
+        return res.status(403).json({ success: false, message: 'Invalid admin secret key' });
+      }
+      role = 'admin';
+    }
+
+    const user = await User.create({ name, email, password, role });
     const token = generateToken(user._id);
 
     res.status(201).json({

@@ -59,15 +59,23 @@ const LoginPage = () => {
     if (errors[e.target.name]) setErrors((e2) => ({ ...e2, [e.target.name]: '' }));
   };
 
+  const redirectByRole = (user) => {
+    if (user?.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) return setErrors(errs);
     setLoading(true);
     try {
-      await login(form.email, form.password);
+      const loggedInUser = await login(form.email, form.password);
       toast.success('Welcome back!');
-      navigate('/dashboard');
+      redirectByRole(loggedInUser);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -78,9 +86,9 @@ const LoginPage = () => {
   const handleDemoLogin = async (account) => {
     setDemoLoading(account.type);
     try {
-      await login(account.email, account.password);
+      const loggedInUser = await login(account.email, account.password);
       toast.success(`Signed in as ${account.label}!`);
-      navigate(account.type === 'admin' ? '/admin' : '/dashboard');
+      redirectByRole(loggedInUser);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {

@@ -144,6 +144,151 @@
   transform: translateX(3px);
 }
 
+/* ── Role Selector (Signup) ─────────────────────────────────── */
+.role-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--gray-200);
+  background: white;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+  width: 100%;
+  position: relative;
+}
+
+.role-option:hover {
+  border-color: var(--gray-400);
+  background: var(--gray-50);
+}
+
+.role-option.active.user {
+  border-color: #0ea5e9;
+  background: #f0f9ff;
+}
+
+.role-option.active.admin {
+  border-color: #7c3aed;
+  background: #f5f3ff;
+}
+
+.role-option-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-icon  { background: #e0f2fe; color: #0ea5e9; }
+.admin-icon { background: #ede9fe; color: #7c3aed; }
+
+.role-option-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.role-option-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.role-option-desc {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.role-check {
+  flex-shrink: 0;
+}
+
+/* Admin secret field */
+.admin-secret-field {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: var(--radius);
+  padding: 14px;
+  animation: fadeIn 0.2s ease;
+}
+
+.secret-badge {
+  display: inline-flex;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  background: #ede9fe;
+  color: #7c3aed;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.secret-input-wrap {
+  position: relative;
+}
+
+.secret-input-wrap .form-input {
+  padding-right: 40px;
+}
+
+.secret-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gray-400);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.secret-toggle:hover { color: var(--gray-700); }
+
+.secret-hint {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-top: 8px;
+}
+
+.secret-hint code {
+  background: #ede9fe;
+  color: #6d28d9;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Admin submit button variant */
+.btn-admin {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: white;
+}
+.btn-admin:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6d28d9, #5b21b6);
+  box-shadow: var(--shadow-md);
+}
+
 /* ── Form ───────────────────────────────────────────────────── */
 .auth-form {
   display: flex;
