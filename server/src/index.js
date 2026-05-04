@@ -6,6 +6,7 @@ const path = require('path');
 
 dotenv.config();
 
+const seedDemoUsers = require('./utils/seed');
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const taskRoutes = require('./routes/tasks');
@@ -50,8 +51,9 @@ const PORT = process.env.PORT || 5000;
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log('MongoDB connected');
+    await seedDemoUsers();
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {

@@ -9,8 +9,8 @@
 
 .auth-card {
   width: 100%;
-  max-width: 420px;
-  padding: 40px 36px;
+  max-width: 460px;
+  padding: 36px 36px 32px;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(99,102,241,0.12), 0 4px 16px rgba(0,0,0,0.06);
 }
@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .auth-title {
@@ -28,20 +28,127 @@
   font-weight: 800;
   color: var(--gray-900);
   text-align: center;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .auth-subtitle {
   font-size: 14px;
   color: var(--gray-500);
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
+/* ── Demo Section ───────────────────────────────────────────── */
+.demo-section {
+  margin-bottom: 8px;
+}
+
+.demo-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.demo-label-line {
+  flex: 1;
+  height: 1px;
+  background: var(--gray-200);
+}
+
+.demo-label-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+}
+
+.demo-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demo-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--gray-200);
+  background: white;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s ease;
+  width: 100%;
+}
+
+.demo-card:hover:not(:disabled) {
+  border-color: var(--demo-color);
+  background: var(--demo-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.demo-card:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.demo-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.demo-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demo-card-role {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.demo-card-desc {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.demo-card-creds {
+  font-size: 11px;
+  color: var(--gray-400);
+  font-family: monospace;
+  margin-top: 1px;
+}
+
+.demo-card-arrow {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.demo-card:hover:not(:disabled) .demo-card-arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* ── Form ───────────────────────────────────────────────────── */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .auth-submit {
@@ -57,7 +164,7 @@
   text-align: center;
   font-size: 14px;
   color: var(--gray-500);
-  margin-top: 24px;
+  margin-top: 22px;
 }
 
 .auth-link {
