@@ -34,6 +34,12 @@ const TaskIcon = () => (
   </svg>
 );
 
+const AdminIcon = () => (
+  <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+  </svg>
+);
+
 const MenuIcon = () => (
   <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -70,6 +76,10 @@ const Layout = () => {
     { to: '/my-tasks', icon: <TaskIcon />, label: 'My Tasks' },
   ];
 
+  const adminLinks = user?.role === 'admin' ? [
+    { to: '/admin', icon: <AdminIcon />, label: 'Admin Panel' },
+  ] : [];
+
   return (
     <div className="layout">
       {sidebarOpen && (
@@ -95,6 +105,14 @@ const Layout = () => {
           {navLinks.map((link) => (
             <NavItem key={link.to} {...link} onClick={closeSidebar} />
           ))}
+          {adminLinks.length > 0 && (
+            <>
+              <div className="nav-divider" />
+              {adminLinks.map((link) => (
+                <NavItem key={link.to} {...link} onClick={closeSidebar} />
+              ))}
+            </>
+          )}
         </nav>
 
         <div className="sidebar-footer">
@@ -106,7 +124,12 @@ const Layout = () => {
               {getInitials(user?.name || '')}
             </span>
             <div className="user-details">
-              <span className="user-name">{user?.name}</span>
+              <div className="user-name-row">
+                <span className="user-name">{user?.name}</span>
+                {user?.role === 'admin' && (
+                  <span className="admin-badge-pill">Admin</span>
+                )}
+              </div>
               <span className="user-email">{user?.email}</span>
             </div>
           </NavLink>

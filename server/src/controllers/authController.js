@@ -29,6 +29,8 @@ const signup = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
+        role: user.role,
+        isActive: user.isActive,
         createdAt: user.createdAt,
       },
     });
@@ -70,6 +72,8 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
+        role: user.role,
+        isActive: user.isActive,
         createdAt: user.createdAt,
       },
     });

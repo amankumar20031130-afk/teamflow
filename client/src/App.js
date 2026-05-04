@@ -11,6 +11,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import TaskDetailPage from './pages/TaskDetailPage';
 import MyTasksPage from './pages/MyTasksPage';
 import ProfilePage from './pages/ProfilePage';
+import AdminPage from './pages/AdminPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -28,6 +29,18 @@ const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
   return !user ? children : <Navigate to="/dashboard" replace />;
+};
+
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return (
+    <div className="page-loading">
+      <span className="loading-spinner" style={{ width: 36, height: 36, borderWidth: 3 }} />
+    </div>
+  );
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'admin') return <Navigate to="/dashboard" replace />;
+  return children;
 };
 
 const AppRoutes = () => (
@@ -51,6 +64,10 @@ const AppRoutes = () => (
       <Route path="tasks/:id" element={<TaskDetailPage />} />
       <Route path="my-tasks" element={<MyTasksPage />} />
       <Route path="profile" element={<ProfilePage />} />
+      <Route
+        path="admin"
+        element={<AdminRoute><AdminPage /></AdminRoute>}
+      />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />
   </Routes>

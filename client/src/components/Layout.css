@@ -98,6 +98,21 @@
   color: var(--primary);
 }
 
+.nav-divider {
+  height: 1px;
+  background: var(--gray-100);
+  margin: 6px 10px;
+}
+
+/* Admin nav item gets a purple accent */
+a.nav-item[href="/admin"].active {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+a.nav-item[href="/admin"]:not(.active):hover {
+  color: #7c3aed;
+}
+
 .sidebar-footer {
   padding: 12px 10px;
   border-top: 1px solid var(--gray-100);
@@ -127,6 +142,12 @@
   min-width: 0;
 }
 
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .user-name {
   font-size: 13px;
   font-weight: 600;
@@ -134,6 +155,18 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.admin-badge-pill {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #ede9fe;
+  color: #7c3aed;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
 }
 
 .user-email {
